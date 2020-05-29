@@ -1,0 +1,3 @@
+[submodule "submodule/test_app_submodule"]
+    path = docker-python
+    url = git@github.com:Kaggle/docker-python.git
