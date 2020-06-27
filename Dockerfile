@@ -1,7 +1,6 @@
-FROM kaggle/python-gpu-build
+FROM gcr.io/kaggle-gpu-images/python
 
-# ライブラリの追加インストール
+# Install extra libs
+COPY ./requirements.txt ./requirements.txt
 RUN pip install -U pip && \
-    pip install comet_ml japanize-matplotlib
-
-ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64"
+    pip install -r requirements.txt

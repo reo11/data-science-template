@@ -1,18 +1,22 @@
 # data-science-template
 ## Set env
 
-clone
+run cpu docker image
 ```
-git clone --recurse-submodules <git url>
-```
-
-build base docker image
-```
-cd docker-python
-./build --gpu
+make jupyter-cpu
 ```
 
-run images
+run gpu docker image
 ```
-docker-compose up --build
+make jupyter-gpu
+```
+
+build original image
+```
+make build-image
+```
+
+run original image
+```
+make run-origin
 ```

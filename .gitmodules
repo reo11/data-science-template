@@ -1,3 +1,0 @@
-[submodule "docker-python"]
-	path = docker-python
-	url = git@github.com:Kaggle/docker-python.git
