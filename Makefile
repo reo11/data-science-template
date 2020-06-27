@@ -19,12 +19,12 @@ clean-pyc: ## remove Python file artifacts
 .PHONY: jupyter-gpu
 jupyter-gpu: clean  ## run jupyter using gpu
 	docker run --gpus all -v ${PWD}:/home -p ${PORT}:${PORT} \
-		--rm ${GPU_IMAGE} jupyter notebook --port ${PORT} --ip=0.0.0.0 --allow-root
+		--rm ${GPU_IMAGE} jupyter lab --port ${PORT} --ip=0.0.0.0 --allow-root
 
 .PHONY: jupyter-cpu
 jupyter-cpu: clean  ## run jupyter
 	docker run -v ${PWD}:/home -p ${PORT}:${PORT} \
-		--rm ${CPU_IMAGE} jupyter notebook --port ${PORT} --ip=0.0.0.0 --allow-root
+		--rm ${CPU_IMAGE} jupyter lab --port ${PORT} --ip=0.0.0.0 --allow-root
 
 .PHONY: build-image
 build-image: clean  ## build a docker image
@@ -33,5 +33,5 @@ build-image: clean  ## build a docker image
 .PHONY: run-origin
 run-origin: clean  ## run jupyter
 	docker run --gpus all -v ${PWD}:/home -p ${PORT}:${PORT} \
-		--rm ${ORIGINAL_IMAGE} jupyter notebook --port ${PORT} --ip=0.0.0.0 --allow-root
+		--rm ${ORIGINAL_IMAGE} jupyter lab --port ${PORT} --ip=0.0.0.0 --allow-root
 

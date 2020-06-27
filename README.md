@@ -1,6 +1,6 @@
 # data-science-template
-## Set env
-
+https://img.shields.io/github/stars/reo11/data-science-template.svg
+## Dockerの設定
 run cpu docker image
 ```
 make jupyter-cpu
