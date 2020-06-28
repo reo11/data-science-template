@@ -1,6 +1,7 @@
 CPU_IMAGE := gcr.io/kaggle-images/python:latest
-GPU_IMAGE := gcr.io/kaggle-gpu-images/python
-ORIGINAL_IMAGE := bluexleoxgreen/ds-base
+GPU_IMAGE := gcr.io/kaggle-gpu-images/python:latest
+ORG_IMAGE := bluexleoxgreen/ds-base:latest
+TEST_IMAGE := bluexleoxgreen/python-lint-test:latest
 CPU_PORT := 50000
 GPU_PORT := 50001
 ORG_PORT := 50002
@@ -31,10 +32,25 @@ jupyter-gpu: clean  ## run jupyter using gpu
 
 .PHONY: build-image
 build-image: clean  ## build a docker image
-	docker build -t ${ORIGINAL_IMAGE} -f ./dockerfiles/Dockerfile .
+	docker build -t ${ORG_IMAGE} -f ./dockerfiles/Dockerfile .
 
 .PHONY: run-origin
-run-origin: clean  ## run jupyter
+run-origin: clean  ## run original jupyter
 	docker run --gpus all -v ${PWD}:/home -p ${ORG_PORT}:${ORG_PORT} \
-		--rm ${ORIGINAL_IMAGE} jupyter lab --port ${ORG_PORT} --ip=0.0.0.0 --allow-root
+		--rm ${ORG_IMAGE} jupyter lab --port ${ORG_PORT} --ip=0.0.0.0 --allow-root
 
+.PHONY: build-test
+build-test:  ## build image for test and lint
+	docker build -t $(TEST_IMAGE) -f dockerfiles/test.Dockerfile .
+
+.PHONY: run-lint
+run-lint: build-test  ## run lint
+	@docker run -v ${PWD}:/work --rm $(TEST_IMAGE) flake8 .
+
+.PHONY: run-auto-lint
+run-auto-lint: build-test ## auto lint using flake8
+	docker run -v ${PWD}:/work --rm $(TEST_IMAGE) ./test/autopep8.sh
+
+.PHONY: run-test
+run-test: build-test  ## run test
+	docker run -v ${PWD}:/work --rm $(TEST_IMAGE) pytest ./test/test.py
