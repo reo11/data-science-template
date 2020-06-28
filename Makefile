@@ -1,7 +1,10 @@
 CPU_IMAGE := gcr.io/kaggle-images/python:latest
 GPU_IMAGE := gcr.io/kaggle-gpu-images/python
 ORIGINAL_IMAGE := bluexleoxgreen/ds-base
-PORT := 19000
+CPU_PORT := 50000
+GPU_PORT := 50001
+ORG_PORT := 50002
+
 
 .PHONY: help
 help: ## this is help message
@@ -16,15 +19,15 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
-.PHONY: jupyter-gpu
-jupyter-gpu: clean  ## run jupyter using gpu
-	docker run --gpus all -v ${PWD}:/home -p ${PORT}:${PORT} \
-		--rm ${GPU_IMAGE} jupyter lab --port ${PORT} --ip=0.0.0.0 --allow-root
-
 .PHONY: jupyter-cpu
 jupyter-cpu: clean  ## run jupyter
-	docker run -v ${PWD}:/home -p ${PORT}:${PORT} \
-		--rm ${CPU_IMAGE} jupyter lab --port ${PORT} --ip=0.0.0.0 --allow-root
+	docker run -v ${PWD}:/home -p ${CPU_PORT}:${CPU_PORT} \
+		--rm ${CPU_IMAGE} jupyter lab --port ${CPU_PORT} --ip=0.0.0.0 --allow-root
+
+.PHONY: jupyter-gpu
+jupyter-gpu: clean  ## run jupyter using gpu
+	docker run --gpus all -v ${PWD}:/home -p ${GPU_PORT}:${GPU_PORT} \
+		--rm ${GPU_IMAGE} jupyter lab --port ${GPU_PORT} --ip=0.0.0.0 --allow-root
 
 .PHONY: build-image
 build-image: clean  ## build a docker image
@@ -32,6 +35,6 @@ build-image: clean  ## build a docker image
 
 .PHONY: run-origin
 run-origin: clean  ## run jupyter
-	docker run --gpus all -v ${PWD}:/home -p ${PORT}:${PORT} \
-		--rm ${ORIGINAL_IMAGE} jupyter lab --port ${PORT} --ip=0.0.0.0 --allow-root
+	docker run --gpus all -v ${PWD}:/home -p ${ORG_PORT}:${ORG_PORT} \
+		--rm ${ORIGINAL_IMAGE} jupyter lab --port ${ORG_PORT} --ip=0.0.0.0 --allow-root
 
