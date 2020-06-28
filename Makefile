@@ -31,7 +31,7 @@ jupyter-gpu: clean  ## run jupyter using gpu
 
 .PHONY: build-image
 build-image: clean  ## build a docker image
-	docker build -t ${ORIGINAL_IMAGE} .
+	docker build -t ${ORIGINAL_IMAGE} -f ./dockerfiles/Dockerfile .
 
 .PHONY: run-origin
 run-origin: clean  ## run jupyter
