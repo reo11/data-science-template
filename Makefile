@@ -1,10 +1,8 @@
-CPU_IMAGE := gcr.io/kaggle-images/python:latest
-GPU_IMAGE := gcr.io/kaggle-gpu-images/python:latest
-ORG_IMAGE := bluexleoxgreen/ds-base:latest
+ORG_CPU_IMAGE := bluexleoxgreen/ds-base:latest
+ORG_GPU_IMAGE := bluexleoxgreen/ds-gpu-base:latest
 TEST_IMAGE := bluexleoxgreen/python-lint-test:latest
 CPU_PORT := 50000
 GPU_PORT := 50001
-ORG_PORT := 50002
 
 
 .PHONY: help
@@ -20,24 +18,20 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
+.PHONY: build-image
+build-image: clean  ## build a docker image
+	docker build -t ${ORG_CPU_IMAGE} -f ./dockerfiles/cpu.Dockerfile .
+	docker build -t ${ORG_GPU_IMAGE} -f ./dockerfiles/gpu.Dockerfile .
+
 .PHONY: jupyter-cpu
 jupyter-cpu: clean  ## run jupyter
-	docker run -v ${PWD}:/home -p ${CPU_PORT}:${CPU_PORT} \
-		--rm ${CPU_IMAGE} jupyter lab --port ${CPU_PORT} --ip=0.0.0.0 --allow-root
+	docker run -it --rm -v ${PWD}:/home -p ${CPU_PORT}:${CPU_PORT} --name jupyter-cpu \
+		${ORG_CPU_IMAGE} jupyter lab --port ${CPU_PORT} --ip=0.0.0.0 --allow-root
 
 .PHONY: jupyter-gpu
 jupyter-gpu: clean  ## run jupyter using gpu
-	docker run --gpus all -v ${PWD}:/home -p ${GPU_PORT}:${GPU_PORT} \
-		--rm ${GPU_IMAGE} jupyter lab --port ${GPU_PORT} --ip=0.0.0.0 --allow-root
-
-.PHONY: build-image
-build-image: clean  ## build a docker image
-	docker build -t ${ORG_IMAGE} -f ./dockerfiles/Dockerfile .
-
-.PHONY: run-origin
-run-origin: clean  ## run original jupyter
-	docker run --gpus all -v ${PWD}:/home -p ${ORG_PORT}:${ORG_PORT} \
-		--rm ${ORG_IMAGE} jupyter lab --port ${ORG_PORT} --ip=0.0.0.0 --allow-root
+	docker run -it --rm --gpus all -v ${PWD}:/home -p ${GPU_PORT}:${GPU_PORT} --name jupyter-gpu \
+		${ORG_GPU_IMAGE} jupyter lab --port ${GPU_PORT} --ip=0.0.0.0 --allow-root
 
 .PHONY: build-test
 build-test:  ## build image for test and lint

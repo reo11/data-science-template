@@ -4,8 +4,16 @@ output/*
 input/*
 models/*
 tmp/*
-*-checkpoint.ipynb
+
 *.log
 *.pot
 *.pyc
 !.gitkeep
+
+# docker chache
+docker/*
+
+# jupyter
+*-checkpoint.ipynb
+.jupyter/*
+.local/*
