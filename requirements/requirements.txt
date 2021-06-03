@@ -4,5 +4,5 @@ flake8==3.9.1
 autopep8
 isort==5.8.0
 black==20.8b0
-mypy==0.812
-pysen==0.9.1
+mypy==0.790
+pysen[lint]==0.9.1

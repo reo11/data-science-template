@@ -1,13 +1,15 @@
 FROM python:3.7.10
 
-ARG UID
-RUN useradd reo -u $UID -m
-USER reo
-
-WORKDIR /work
-
-COPY ./requirements/test.requirements.txt ./requirements.txt
+COPY ./requirements/test.requirements.txt /tmp/requirements.txt
 
 RUN pip install -U pip && \
-    pip install -r requirements.txt
+    pip install -r /tmp/requirements.txt --no-warn-script-location
 
+ARG UID
+ARG UNAME
+RUN useradd $UNAME -u $UID -m
+USER $UNAME
+
+WORKDIR /home/$UNAME
+
+ENV PYTHONPATH ${PYTHONPATH}:${PWD}

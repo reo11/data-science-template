@@ -1,9 +1,15 @@
 FROM gcr.io/kaggle-gpu-images/python
 
-ARG UID
-RUN useradd reo -u $UID -m
-USER reo
+COPY ./requirements/test.requirements.txt /tmp/requirements.txt
 
-COPY ./requirements/requirements.txt ./requirements.txt
 RUN pip install -U pip && \
-    pip install -r requirements.txt
+    pip install -r /tmp/requirements.txt --no-warn-script-location
+
+ARG UID
+ARG UNAME
+RUN useradd $UNAME -u $UID -m
+USER $UNAME
+
+WORKDIR /home/$UNAME
+
+ENV PYTHONPATH ${PYTHONPATH}:${PWD}
